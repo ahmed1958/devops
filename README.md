@@ -3,7 +3,7 @@
 ## Project Overview
 
 This is a distributed voting application that allows users to vote between two options and view real-time results. The application consists of multiple microservices that work together to provide a complete voting experience.
-
+- [Solution overview](#voting-microservices-system-dockerized)
 ## Application Architecture
 
 The voting application consists of the following components:
@@ -121,3 +121,74 @@ The application includes a seed service (`/seed-data`) that can populate the dat
 - Make sure to handle service startup order properly with health checks
 
 Good luck with your challenge! 🚀
+---
+# Voting Microservices System (Dockerized)
+
+A distributed voting system built using microservices architecture and fully containerized with Docker Compose.
+
+The project simulates a real-world event-driven system with multiple services communicating through Redis and PostgreSQL.
+
+---
+
+## Architecture
+
+This system is composed of:
+
+- Vote Service (Python / Flask) → receives votes and pushes them to Redis  
+- Worker Service (.NET 7) → consumes votes from Redis and stores them in PostgreSQL  
+- Result Service (Node.js + Socket.IO) → displays live aggregated results  
+- Load Test Service → generates traffic using Apache Bench  
+- Redis → message broker / queue  
+- PostgreSQL → persistent storage  
+
+---
+
+## Services Breakdown
+
+### Vote Service
+- Python Flask application  
+- Accepts HTTP requests  
+- Pushes votes into Redis queue  
+
+### Worker Service
+- .NET 7 background worker  
+- Listens to Redis queue  
+- Stores processed votes in PostgreSQL  
+
+### Result Service
+- Node.js application  
+- Uses Socket.IO for real-time updates  
+- Reads aggregated vote results from PostgreSQL  
+
+### Load Test Service
+- Simulates real traffic using Apache Bench  
+- Used for performance testing  
+
+---
+
+## How to Run
+
+### Requirements
+- Docker  
+- Docker Compose  
+
+### Start the system
+
+```bash
+docker compose up --build
+```
+
+### Dockerfiles Overview
+ - Worker (.NET) : 
+   - Multi-stage build (SDK → Runtime)
+   - Runs Worker.dll in container
+ - Vote (Python Flask)
+   - Lightweight Python image
+   - Installs dependencies from requirements.txt
+ - Result (Node.js)
+   - Uses Node 18 Alpine
+   - Runs Express + Socket.IO server
+ - Load Test
+   - Uses Apache Bench (ab)
+   - Generates fake voting traffic
+

@@ -10,7 +10,13 @@ pipeline {
             steps {
                 script {
                     // Navigate to app_deployment directory and run Ansible Playbook
-                      sh 'kubectl apply -k k8s'
+                      sh 'cd k8s'
+                      sh 'kubectl apply -f vote.yml'
+                      sh 'kubectl apply -f redis.yml'
+                      sh 'kubectl apply -f db.yml'
+                      sh 'kubectl apply -f worker.yml'
+                      sh 'kubectl apply -f result.yml'
+                      
                     }
                 }
             }

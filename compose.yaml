@@ -36,10 +36,8 @@ services:
         condition: service_healthy
   redis:
     image: redis:latest
-    volumes:
-      - ./healthchecks/redis.sh:/redis.sh
     healthcheck:
-      test: ["CMD", "/redis.sh"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -51,9 +49,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./healthchecks/postgres.sh:/postgres.sh
     healthcheck:
-      test: ["CMD", "/postgres.sh"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 3s
       retries: 5

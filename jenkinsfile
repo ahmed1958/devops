@@ -30,9 +30,9 @@
             steps {
                 script {
                     // Use the correct registry URL
-                   sh "docker tag devops-vote ${DOCKER_IMAGE_VOTE}"
-                   sh "docker tag devops-result ${DOCKER_IMAGE_RESULT}"
-                   sh "docker tag devops-worker ${DOCKER_IMAGE_WORKER}"
+                   sh "docker tag testingpipeline-vote ${DOCKER_IMAGE_VOTE}"
+                   sh "docker tag testingpipeline-result ${DOCKER_IMAGE_RESULT}"
+                   sh "docker tag testingpipeline-worker ${DOCKER_IMAGE_WORKER}"
                    docker.withRegistry('https://index.docker.io/v1/', 'docker_hub_log') {
                         // Ensure that DOCKER_IMAGE includes the tag
                         docker.image("${DOCKER_IMAGE_VOTE}").push() // Specify a tag if needed

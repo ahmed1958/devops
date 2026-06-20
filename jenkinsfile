@@ -21,7 +21,7 @@
                 script {
                     // You can define your tests here, for example, running a container to test the application
                         sh 'echo "Running tests..."'
-                        sh 'docker-compose up --build --abort-on-container-exit --exit-code-from tests'
+                        sh 'docker compose up --build --abort-on-container-exit --exit-code-from tests'
                 }
             }
            }

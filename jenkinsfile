@@ -1,0 +1,54 @@
+ pipeline {
+        agent any
+        environment {
+            DOCKER_IMAGE_VOTE = 'sekovv/vote:latest'
+            DOCKER_IMAGE_RESULT = 'sekovv/result:latest'
+            DOCKER_IMAGE_WORKER = 'sekovv/worker:latest'            
+        }
+        stages {
+            stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ahmed1958/devops'
+            }
+            }
+           stage('Build Image') {
+            steps {
+               sh 'docker compose build'
+            }
+           }
+           stage('Test Image') {
+            steps {
+                script {
+                    // You can define your tests here, for example, running a container to test the application
+                        sh 'echo "Running tests..."'
+                        sh 'docker-compose up --build --abort-on-container-exit --exit-code-from tests'
+                }
+            }
+           }
+
+            stage('Push Image') {
+            steps {
+                script {
+                    // Use the correct registry URL
+                   sh "docker tag devops-vote ${DOCKER_IMAGE_VOTE}"
+                   sh "docker tag devops-result ${DOCKER_IMAGE_RESULT}"
+                   sh "docker tag devops-worker ${DOCKER_IMAGE_WORKER}"
+                   docker.withRegistry('https://index.docker.io/v1/', 'docker_hub_log') {
+                        // Ensure that DOCKER_IMAGE includes the tag
+                        docker.image("${DOCKER_IMAGE_VOTE}").push() // Specify a tag if needed
+                        docker.image("${DOCKER_IMAGE_RESULT}").push()
+                        docker.image("${DOCKER_IMAGE_WORKER}").push()
+                    }
+                }
+              }
+            }
+             stage('Clean Stage') {
+            steps {
+                script {
+                    // Use the correct registry URL
+                sh "docker compose down --rmi all -v"
+                }
+              }
+            }
+    }
+   

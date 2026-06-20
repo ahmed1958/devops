@@ -1,27 +1,32 @@
 version: "3.9"
-
 services:
-  loadtest:
-    build: ./seed-data
+  # loadtest:
+  #   build: ./seed-data
+  #   depends_on:
+  #     - vote
+ 
+  tests:
+    build: ./result/tests
     depends_on:
-      - vote
+      vote:
+        condition: service_started
+      result:
+        condition: service_started
+    restart: "no"
   vote:
     build: ./vote
     ports:
-      - "8080:80"
+      - "8082:80"
     depends_on:
       redis:
         condition: service_healthy
-
   worker:
     build: ./worker
     depends_on:
       redis:
         condition: service_healthy
-
       db:
         condition: service_healthy
-
   result:
     build: ./result
     ports:
@@ -29,7 +34,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
   redis:
     image: redis:latest
     volumes:
@@ -41,6 +45,7 @@ services:
       retries: 5
   db:
     image: postgres:16
+    
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -52,6 +57,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-
+  
 volumes:
   postgres_data:

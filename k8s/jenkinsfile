@@ -1,0 +1,20 @@
+pipeline {
+    agent { any }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ahmed1958/devops'
+            }
+        }
+        stage('Deploy the App') {
+            steps {
+                script {
+                    // Navigate to app_deployment directory and run Ansible Playbook
+                      sh 'cd k8s'
+                      sh 'kubectl apply -f vote.yml redis.yml db.yml'
+                      sh 'kubectl apply -f worker.yml result.yml '
+                    }
+                }
+            }
+        }
+    }
